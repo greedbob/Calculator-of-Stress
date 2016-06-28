@@ -1,0 +1,120 @@
+% --- Executes on button press in pushbutton1.
+function pushbutton1_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% 取数据
+angle = str2num(get(handles.angle,'String'));
+angle = angle/180*pi;
+b1 = str2double(get(handles.b1, 'String'));
+b2 = str2double(get(handles.b2, 'String'));
+b3 = str2double(get(handles.b3, 'String'));
+b4 = str2double(get(handles.b4, 'String'));
+b = [b1,b2;b3,b4];
+
+% 正应力和切应力
+left=[cos(angle),sin(angle);-sin(angle),cos(angle)];
+x=left*b*(left');
+zheng=x(1);
+qie=x(2);
+set(handles.ans1,'String',zheng);
+set(handles.ans2,'String',qie);
+
+% 主应力和主方向by bo
+if (b1==b4)
+    zhufangxiang = 0.5*pi;
+else
+    zhufangxiang=atan(2*b2/(b1-b4))/2;
+end
+
+leftzyl=[cos(zhufangxiang),sin(zhufangxiang);-sin(zhufangxiang),cos(zhufangxiang)];
+zhuyinglizhuangtai = leftzyl*b*(leftzyl');
+
+zhuyingli1=zhuyinglizhuangtai(1);
+zhuyingli2=zhuyinglizhuangtai(4);
+set(handles.ans3,'String',zhufangxiang/pi*180);
+set(handles.ans41,'String',zhuyingli1);
+set(handles.ans42,'String',zhuyingli2);
+
+% 主应力描点和标注
+hold on;
+r = sqrt((b1-b4)^2/4+b2^2);
+xin = (b1+b4)/2;
+plot(xin+r,0,'r*');
+text(xin+r,r/10,[ '  主应力 (0' ',' num2str(zhuyingli1) ')']);
+plot(xin-r,0,'r*');
+text(xin-r,r/10,[ '  主应力 (0' ',' num2str(zhuyingli2) ')']);
+
+% 莫尔圆
+hold on;
+axis equal;
+alpha=0:pi/50:2*pi;
+x1 = (b1+b4)/2+ sqrt((b1-b4)*(b1-b4)/4+b2*b2)*cos(alpha);
+y1 = sqrt((b1-b4)*(b1-b4)/4+b2*b2)*sin(alpha);
+plot(handles.axes1,x1,y1,'g');
+
+% 圆心到（b1,b2）的线
+hold on;
+axis equal;
+xin = (b1+b4)/2;
+if(xin==b1)
+    n=abs(r)/0.01+1;
+    x2=ones(1,n);
+    x2=xin*x2;
+    if(b1>0)
+        y2=0:0.01:r;
+    else
+        y2=r:0.01:0;
+    end
+else
+    if(xin>b1)
+    x2 = (b1):0.001:(xin);
+    k = 2*b2/(b4-b1);
+    else
+    x2 = (xin):0.001:(b1);
+    k = 2*b2/(b1-b4);
+    end
+    y2 = k*(x2-xin);
+end
+plot(handles.axes1,x2,y2,'r');
+
+% （b1,b2）描点和标注
+plot(b1,b2,'r*');
+text(b1,b2,[ '  X (' num2str(b1) ',' num2str(b2) ')']);
+
+% 圆心到（zheng，qie）的线
+hold on;
+axis equal;
+if(xin==zheng)
+    n=abs(r)/0.01+1;
+    x3=ones(1,n);
+    x3=xin*x3;
+    if(zheng>0)
+        y3=0:0.01:r;
+    else
+        y3=r:0.01:0;
+    end
+else
+    if(xin>zheng)
+      x3 = (zheng):0.001:(xin);
+      k = qie/(xin-zheng);
+    else
+      x3 = (xin):0.001:(zheng);
+      k = qie/(zheng-qie);
+    end
+    y3 = k*(x3-xin);
+end
+plot(handles.axes1,x3,y3,'b');
+
+% （zheng,qie）描点和标注
+plot(zheng,qie,'r*');
+text(zheng,qie,[ '  X’ (' num2str(zheng) ',' num2str(qie) ')']);
+
+% 坐标X轴
+%disp(xin);
+%disp(r);
+quiver(xin-5*r/4,0,3*r,0,'black');
+text(xin+6/5*r,-1,'x轴');
+quiver(0,-5*r/4,0,3*r,'black');
+text(1,6/5*r,'y轴');
