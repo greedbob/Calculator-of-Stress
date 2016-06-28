@@ -1,0 +1,19 @@
+% --- Executes on button press in pushbutton2.
+function pushbutton2_Callback(hObject, eventdata, handles)
+
+% 清除计算结果
+set(handles.ans1,'String','');
+set(handles.ans2,'String','');
+set(handles.ans3,'String','');
+set(handles.ans41,'String','');
+set(handles.ans42,'String','');
+
+
+% 清除图形
+hold off;
+x3=0;
+y3=0;
+plot(handles.axes1,x3,y3,'w');
+
+% 清除数据
+clear;
