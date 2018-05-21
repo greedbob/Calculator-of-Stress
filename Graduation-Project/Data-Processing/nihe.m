@@ -1,4 +1,4 @@
-function []=ni()
+function []=nihe()
 % x4=[0 26.43667 38.17333 47.56667 52.42333 55.3 55.9 57.09];
 % y4=[0.002 0.003 0.004 0.005  0.006 0.007 0.008 0.008];
 
@@ -61,9 +61,9 @@ sum10=10*0.01*sum(z10);
 
 summ=[sum4,sum5,sum6,sum7,sum8,sum9,sum10];
 disp(summ);
-%¡¡z7=polyfit(x7,y7,2);
-%¡¡y=polyval(z7,x,2);
-%¡¡disp(y);
+% z7=polyfit(x7,y7,2);
+% y=polyval(z7,x,2);
+% disp(y);
 % plot(x,y);
 % disp(sum);
 % plot(x4,y4,'r*');
