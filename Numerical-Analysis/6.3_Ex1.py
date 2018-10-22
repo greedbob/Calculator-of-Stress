@@ -13,7 +13,7 @@ def main():
 
 
 def fx(x):
-    return (4 * x - 7)/(x - 2)
+    return (4 * x - 7) / (x - 2)
 
 
 def fnx(x, fn):

@@ -1,20 +1,22 @@
+import math
+
+
 def main():
-    num = 0  # 输入要计算的插值点
-    x = []  # 输入自变量序列
-    y = []  # 给出原函数而非因变量序列时使用fx()函数计算因变量序列，给出因变量序列可不运行fx函数
+    num = 0.5
+    x = [0, 0.3, 0.6]
+    y = []
     fn = []
     for i in x:
         y.append(fx(i))
     fn.append(y)
     fn = fnx(x, fn)
-    for i in fn:  # 输出各阶差分
-        print(len(x) - len(i), ':', i)
-    ans = newton_inter(num, x, fn)
-    print(ans)  # 输出插值
+    print(fn)
+    N = Nx(num, x, fn)
+    print(N)
 
 
 def fx(n):
-    ans = n  # 改为原函数
+    ans = math.e ** (2 * n) * math.cos(3 * n)  # 改为原函数
     return ans
 
 
@@ -27,7 +29,7 @@ def fnx(x, fn):
     return fn
 
 
-def newton_inter(num, x, fn):
+def Nx(num, x, fn):
     ans = 0
     ans += fn[0][0]
     for i in range(len(x)-1):

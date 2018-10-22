@@ -1,6 +1,9 @@
+import math
+
+
 def main():
-    num = 0  # 输入要计算的插值点
-    x = []  # 输入自变量序列
+    num = 1  # 输入要计算的插值点
+    x = [0.9, 1.1]  # 输入自变量序列
     y = []  # 给出原函数而非因变量序列时使用fx()函数计算因变量序列，给出因变量序列可不运行fx函数
     fn = []
     for i in x:
@@ -14,7 +17,7 @@ def main():
 
 
 def fx(n):
-    ans = n  # 改为原函数
+    ans = math.sin(n)  # 改为原函数
     return ans
 
 

@@ -1,6 +1,9 @@
+import math
+
+
 def main():
-    num = 0
-    x = []
+    num = 0.5
+    x = [0, 0.3, 0.6]
     y = []
     for i in range(len(x)):
         y.append(fx(x[i]))
@@ -9,7 +12,7 @@ def main():
 
 
 def fx(n):
-    ans = n  # 改为原函数
+    ans = math.e ** (2 * n) * math.cos(3 * n)  # 改为原函数
     return ans
 
 
