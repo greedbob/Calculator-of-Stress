@@ -2,19 +2,22 @@ from sympy import *
 
 
 def main():
-    n = 0
-    x = []
-    fx = []
+    n = 3
+    x_list = [0, 0.15, 0.31, 0.5, 0.6, 0.75]
+    fx = [1, 1.004, 1.031, 1.117, 1.223, 1.422]
     y = []
-    para = parameter(x)
-    poly(n, x, fx, y, para)
+    para = parameter(n)
+    poly(n, x_list, fx, y, para)
     result = solve(y, para)
-    print(result)
+    P = Px(para, result)
+    print('P{0} is: {1}'.format(n, P))
+    E = error(x_list, fx, P)
+    print('Error{0} is: {1}'.format(n, E))
 
 
-def parameter(x):
+def parameter(n):
     para = []
-    for i in range(len(x)):
+    for i in range(n+1):
         para.append(symbols('a{0}'.format(i)))
     return para
 
@@ -34,6 +37,23 @@ def poly(n, x, fx, y, para):
                     temp += fx[jjj]*x[jjj]**i
                 y[i] -= temp
         print('y{0} = '.format(i), y[-1])
+
+
+def Px(para, result):
+    x = symbols('x')
+    P = x*0
+    for i, key in enumerate(para):
+        P += result[key] * x**i
+        i += 1
+    return P
+
+
+def error(x_list, fx, P):
+    E = 0
+    x = symbols('x')
+    for i in range(len(fx)):
+        E += (fx[i] - P.subs(x, x_list[i]))**2
+    return E
 
 
 main()
