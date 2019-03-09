@@ -1,13 +1,10 @@
 #include <iostream>
 #include "Stack.hpp"
 #include "TestStack.hpp"
-#include "Infix2Postfix.hpp"
 
 int main() {
+	// 测试栈
     Stack<int> stack;
     TestStack(stack);
-
-    Infix2Postfix();
-
     return 0;
 }
