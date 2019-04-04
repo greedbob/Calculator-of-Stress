@@ -1,41 +1,43 @@
-from collections import *
-
-
 def main():
     minsup = 2
-    maxLen, itemsets, trans = testInput()
-    # maxLen, itemsets, trans = inputTrans()
+    maxLen, itemsets, supports, trans = testInput()
+    # maxLen, itemsets, supports, trans = inputTrans()
     sortedTrans = sortTrans(trans)
-    itemsets = apriori(minsup, maxLen, itemsets, sortedTrans)
-    print('Final Dict:')
-    for dict in itemsets:
-        print(dict)
+    itemsets, supports = apriori(minsup, maxLen, itemsets, supports, sortedTrans)
+    output(itemsets, supports)
     return 0
 
 
 def testInput():
     maxLen = 4
-    itemsets = [OrderedDict([('1', 0), ('2', 0), ('3', 0), ('4', 0)])]
-    trans = [['1'], ['1', '2'], ['1', '2', '3'], ['1', '2', '3', '4'], ['1', '2', '3', '4']]
-    return maxLen, itemsets, trans
+    itemsets = [[['1'], ['2'], ['3'], ['4'], ['5']]]
+    supports = [[0, 0, 0, 0, 0]]
+    trans = [['1', '3', '4'], ['2', '3', '5'], ['1', '2', '3', '5'], ['2', '5'], ['1', '2', '3', '5']]
+    return maxLen, itemsets, supports, trans
 
 
 def inputTrans():
     maxLen = 0
     trans = []
-    dict = OrderedDict()
-    items = [dict]
+    itemsets = [[]]
+    supports = [[]]
     line = ' '
     while (line):
         line = input('Enter the trans: ').strip()
         if line:
             tran = []
-            for item in line.split(' '):
+            # itemsets[0].append([])
+            for index, item in enumerate(line.split(' ')) :
                 tran.append(item)
-                if item not in items[0]: items[0][item] = 0
+                if [item] not in itemsets[0]:
+                    itemsets[0].append([item])
+                    supports[0].append(0)
             if len(tran) > maxLen: maxLen = len(tran)
             trans.append(tran)
-    return maxLen, items, trans
+    print(itemsets)
+    print(supports)
+    print(trans)
+    return maxLen, itemsets, supports, trans
 
 
 def sortTrans(trans):
@@ -56,39 +58,55 @@ def sortTrans(trans):
     return sortedTrans
 
 
-def apriori(minsup, maxLen, itemsets, sortedTrans):
+def apriori(minsup, maxLen, itemsets, supports, sortedTrans):
     for index in range(maxLen):
         print('#', index, )
         itemset = itemsets[index]
-        # calculate the support of itemset
-        for key in itemset.keys():
-            for tran in sortedTrans:
-                isIn = True
-                for str in key:
-                    if str not in tran: isIn = False
-                if isIn: itemset[key] += 1
-        print('calculate the support of itemset: ', itemset)
-        # delete the infrequent itemset
-        print('itemset.keys(): ', itemset.keys())
-        keylist = list(itemset.keys())
-        for key in keylist:
-            if itemset[key] < minsup: itemset.pop(key)
-        print('delete the infrequent itemset: ', itemset)
-        if len(itemset) == 0:
+        support = supports[index]
+        if itemset == []:
             break
         else:
-            newitemset = OrderedDict()
-            keylist = list(itemset.keys())
-            print('keylist', keylist)
-            for i in range(len(keylist)):
-                for j in range(i + 1, len(keylist)):
-                    print('i: ', i, 'j: ', j)
-                    if keylist[i][:-1] == keylist[j][:-1] and keylist[i][-1] != keylist[j][-1]:
-                        newKey = keylist[i] + keylist[j][-1]
-                        newitemset[newKey] = 0
-            itemsets.append(newitemset)
-            print('itemsets: ', itemsets)
-    return itemsets
+            # calculate the support of itemset
+            for index_items, items in enumerate(itemset):
+                for tran in sortedTrans:
+                    isIn = True
+                    for item in items:
+                        if item not in tran: isIn = False
+                    if isIn: support[index_items] += 1
+            print('After calculate the support of itemset: {0} support: {1}'.format(itemset, support))
+            # delete the infrequent itemset
+            for index_key, key in enumerate(itemset):
+                if support[index_key] < minsup:
+                    itemset.pop(index_key)
+                    support.pop(index_key)
+            print('After delete the infrequent itemset: {0} support: {1}'.format(itemset, support))
+            # generate new itemset
+            new_itemset = []
+            new_support = []
+            for i in range(len(itemset)):
+            # for i, items in enumerate(itemset):
+                for j in range(i + 1, len(itemset)):
+                    if itemset[i][:-1] == itemset[j][:-1] and itemset[i][-1] != itemset[j][-1]:
+                        new_items = itemset[i].copy()
+                        new_items.append(itemset[j][-1])
+                        new_itemset.append(new_items)
+                        new_support.append(0)
+            print('After generate new itemsets: {0} support: {1}'.format(itemset, support))
+            itemsets.append(new_itemset)
+            supports.append(new_support)
+            print('Finish # {0}: itemsets: {1} supports: {2}'.format(index, itemsets, supports))
+    return itemsets, supports
+
+
+def output(itemsets, supports):
+    print('Final Result:')
+    for index, itemset in enumerate(itemsets):
+        for index_items, items in enumerate(itemset):
+            line = ''
+            for item in items:
+                line += item
+                line += ' '
+            print('{0} #SUP: {1}'.format(line, supports[index][index_items]))
 
 
 if __name__ == '__main__':
