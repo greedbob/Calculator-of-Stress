@@ -1,7 +1,10 @@
+# Code by Bo in April 2019 for Data Mining Course
 def main():
     minsup = 2
-    maxLen, itemsets, supports, trans = testInput()
-    # maxLen, itemsets, supports, trans = inputTrans()
+    # use testInput() function to get data directly without input
+    # maxLen, itemsets, supports, trans = testInput()
+    # use inputTrans() to input data
+    maxLen, itemsets, supports, trans = inputTrans()
     sortedTrans = sortTrans(trans)
     itemsets, supports = apriori(minsup, maxLen, itemsets, supports, sortedTrans)
     output(itemsets, supports)
@@ -26,13 +29,13 @@ def inputTrans():
         line = input('Enter the trans: ').strip()
         if line:
             tran = []
-            # itemsets[0].append([])
-            for index, item in enumerate(line.split(' ')) :
+            for index, item in enumerate(line.split(' ')):
                 tran.append(item)
                 if [item] not in itemsets[0]:
                     itemsets[0].append([item])
                     supports[0].append(0)
-            if len(tran) > maxLen: maxLen = len(tran)
+            if len(tran) > maxLen:
+                maxLen = len(tran)
             trans.append(tran)
     print(itemsets)
     print(supports)
@@ -63,7 +66,7 @@ def apriori(minsup, maxLen, itemsets, supports, sortedTrans):
         print('#', index, )
         itemset = itemsets[index]
         support = supports[index]
-        if itemset == []:
+        if not itemset:
             break
         else:
             # calculate the support of itemset
@@ -71,8 +74,10 @@ def apriori(minsup, maxLen, itemsets, supports, sortedTrans):
                 for tran in sortedTrans:
                     isIn = True
                     for item in items:
-                        if item not in tran: isIn = False
-                    if isIn: support[index_items] += 1
+                        if item not in tran:
+                            isIn = False
+                    if isIn:
+                        support[index_items] += 1
             print('After calculate the support of itemset: {0} support: {1}'.format(itemset, support))
             # delete the infrequent itemset
             for index_key, key in enumerate(itemset):
@@ -84,7 +89,6 @@ def apriori(minsup, maxLen, itemsets, supports, sortedTrans):
             new_itemset = []
             new_support = []
             for i in range(len(itemset)):
-            # for i, items in enumerate(itemset):
                 for j in range(i + 1, len(itemset)):
                     if itemset[i][:-1] == itemset[j][:-1] and itemset[i][-1] != itemset[j][-1]:
                         new_items = itemset[i].copy()
